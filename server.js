@@ -13,6 +13,25 @@ mongoose
     useUnifiedTopology: true,
   }).then(()=>console.log('database connected'))
   .catch((err)=>console.log(`error${err}`))
+
+  function sendResponse(res,err,data){
+  if (err){
+    res.json({
+      success: false,
+      message: err
+    })
+  } else if (!data){
+    res.json({
+      success: false,
+      message: "Not Found"
+    })
+  } else {
+    res.json({
+      success: true,
+      data: data
+    })
+  }
+}
   app.use(bodyParser.json());
 
 app.listen(port, ()=>{
@@ -21,21 +40,12 @@ app.listen(port, ()=>{
 
 // CREATE
 app.post('/users',(req,res)=>{
-  const {name,email,password} = req.body
   User.create(
     {
-      name,
-      email,
-      password
+      ...req.body
     },
     (err,data)=>{
-    if (err){
-      res.json({success: false,message: err})
-    } else if (!data){
-      res.json({success: false,message: "Not Found"})
-    } else {
-      res.json({success: true,data: data})
-    }
+  sendResponse(res,err,data)
   })
 })
 
@@ -43,22 +53,8 @@ app.route('/users/:id')
 // READ
 .get((req,res)=>{
   User.findById(req.params.id,(err,data)=>{
-    if (err){
-      res.json({
-        success: false,
-        message: err
-      })
-    } else if (!data){
-      res.json({
-        success: false,
-        message: "Not Found"
-      })
-    } else {
-      res.json({
-        success: true,
-        data: data
-      })
-    }
+  
+    sendResponse(res,err,data)
   })
 })
 // UPDATE
@@ -77,22 +73,8 @@ app.route('/users/:id')
       new:true
     },
     (err,data)=>{
-      if (err){
-        res.json({
-          success: false,
-          message: err
-        })
-      } else if (!data){
-        res.json({
-          success: false,
-          message: "Not Found"
-        })
-      } else {
-        res.json({
-          success: true,
-          data: data
-        })
-      }
+    sendResponse(res,err,data)
+    
     }
   )
 })
@@ -102,22 +84,7 @@ app.route('/users/:id')
   User.findByIdAndDelete(
     req.params.id,
     (err,data)=>{
-      if (err){
-        res.json({
-          success: false,
-          message: err
-        })
-      } else if (!data){
-        res.json({
-          success: false,
-          message: "Not Found"
-        })
-      } else {
-        res.json({
-          success: true,
-          data: data
-        })
-      }
+      sendResponse(res,err,data)
     }
   )
 })
