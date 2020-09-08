@@ -6,6 +6,7 @@ const port=8000;
 const app= express();
 const User = require('./models/User')
 //create database connection
+
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
