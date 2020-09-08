@@ -21,7 +21,22 @@ app.listen(port, ()=>{
 
 // CREATE
 app.post('/users',(req,res)=>{
-  // User.create()
+  const {name,email,password} = req.body
+  User.create(
+    {
+      name,
+      email,
+      password
+    },
+    (err,data)=>{
+    if (err){
+      res.json({success: false,message: err})
+    } else if (!data){
+      res.json({success: false,message: "Not Found"})
+    } else {
+      res.json({success: true,data: data})
+    }
+  })
 })
 
 app.route('/users/:id')
